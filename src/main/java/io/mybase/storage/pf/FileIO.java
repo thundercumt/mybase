@@ -25,7 +25,7 @@ public class FileIO implements Closeable {
         }
         try {
             this.raf = new RandomAccessFile(file, "rwd");
-            opened.compareAndSet(false, true);
+            while(!opened.compareAndSet(false, true));
         } catch (FileNotFoundException e) {
             throw new StorageException("not found", e);
         }
@@ -37,7 +37,7 @@ public class FileIO implements Closeable {
         }
         try {
             raf.close();
-            opened.compareAndSet(true, false);
+            while(!opened.compareAndSet(true, false));
         } catch (IOException e) {
             throw new StorageException("close failed", e);
         }
@@ -51,12 +51,6 @@ public class FileIO implements Closeable {
             raf.seek(pos);
         } catch (IOException e) {
             throw new StorageException("seek failed", e);
-        }
-    }
-
-    public void forceOpen() {
-        if (!opened.get()) {
-            this.open();
         }
     }
 

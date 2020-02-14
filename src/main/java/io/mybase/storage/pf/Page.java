@@ -1,8 +1,8 @@
 package io.mybase.storage.pf;
 
 public class Page {
-    private byte[] data;
-    private boolean dirty;
+    private final byte[] data;
+    private volatile boolean dirty;
 
     public Page(int pageSize) {
         this(pageSize, new byte[pageSize]);

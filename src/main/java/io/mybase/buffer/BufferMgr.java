@@ -1,7 +1,7 @@
 package io.mybase.buffer;
 
 import java.util.LinkedList;
-import java.util.function.Predicate;
+import java.util.stream.IntStream;
 
 import io.mybase.storage.pf.Page;
 import io.mybase.storage.pf.PagedFile;
@@ -13,10 +13,10 @@ public class BufferMgr {
         private int pageNum;
         private Page page;
 
-        public Entry(PagedFile file, int pageNum, int pageSize) {
+        public Entry(PagedFile file, int pageNum, Page page) {
             this.file = file;
             this.pageNum = pageNum;
-            page = new Page(pageSize);
+            this.page = page;
         }
     }
 
@@ -26,21 +26,15 @@ public class BufferMgr {
 
     private int capacity;
     private BufHead[] table;
-    private LinkedList<Entry> used;
-    private LinkedList<Entry> free;
-    private final Predicate<Entry> predicate = (e -> e.file == null);
+    private LinkedList<Integer> used;
+    private LinkedList<Integer> free;
 
     public BufferMgr(int capacity) {
         this.capacity = capacity;
         this.table = new BufHead[capacity];
         this.used = new LinkedList<>();
         this.free = new LinkedList<>();
-    }
-
-    private int hash(Entry entry) {
-        PagedFile file = entry.file;
-        int pageNum = entry.pageNum;
-        return hash(file, pageNum);
+        IntStream.range(0, capacity).forEach(i -> free.addLast(i));
     }
 
     private int hash(PagedFile file, int pageNum) {
@@ -60,7 +54,7 @@ public class BufferMgr {
         }
 
         Page page = file.readPage(pageNum);
-        putData(file, pageNum, page);
+        putDataDirect(file, pageNum, page);
         return page;
     }
 
@@ -71,7 +65,15 @@ public class BufferMgr {
         if (old != null) {
             oldPage = old.page;
             old.page = page;
+        } else {
+            old = new Entry(file, pageNum, page);
+            table[slot].bucket.addFirst(old);
         }
         return oldPage;
+    }
+
+    private void putDataDirect(PagedFile file, int pageNum, Page page) {
+        int slot = hash(file, pageNum);
+        table[slot].bucket.addFirst(new Entry(file, pageNum, page));
     }
 }
