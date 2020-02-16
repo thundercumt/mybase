@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import io.mybase.storage.StorageException;
+import io.mybase.StorageException;
 
 public class FileIO implements Closeable {
     private File file;
