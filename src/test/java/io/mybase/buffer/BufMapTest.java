@@ -20,7 +20,7 @@ public class BufMapTest {
     @Before
     public void setUp() throws IOException {
         map = new BufMap(10);
-        File tmp = File.createTempFile("bufmaptest", "temp");
+        File tmp = File.createTempFile(BufMapTest.class.getSimpleName(), "temp");
         tmp.deleteOnExit();
         file = new PagedFile(tmp, 1024);
     }

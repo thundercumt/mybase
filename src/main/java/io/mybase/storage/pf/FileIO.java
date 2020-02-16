@@ -45,7 +45,7 @@ public class FileIO implements Closeable {
 
     public void seek(long pos) {
         if (!opened.get()) {
-            throw new IllegalStateException("not opened");
+            throw new StorageException("not opened");
         }
         try {
             raf.seek(pos);
@@ -56,7 +56,7 @@ public class FileIO implements Closeable {
 
     public int read(byte[] bytes, int offset, int size) {
         if (!opened.get()) {
-            throw new IllegalStateException("not opened");
+            throw new StorageException("not opened");
         }
         try {
             return raf.read(bytes, offset, size);
@@ -71,7 +71,7 @@ public class FileIO implements Closeable {
 
     public void write(byte[] bytes, int offset, int size) {
         if (!opened.get()) {
-            throw new IllegalStateException("not opened");
+            throw new StorageException("not opened");
         }
         try {
             raf.write(bytes, offset, size);
@@ -86,7 +86,7 @@ public class FileIO implements Closeable {
 
     public void truncate(long size) {
         if (!opened.get()) {
-            throw new IllegalStateException("not opened");
+            throw new StorageException("not opened");
         }
         try {
             raf.setLength(size);
@@ -97,7 +97,7 @@ public class FileIO implements Closeable {
 
     public void flush() {
         if (!opened.get()) {
-            throw new IllegalStateException("not opened");
+            throw new StorageException("not opened");
         }
         try {
             raf.getFD().sync();
