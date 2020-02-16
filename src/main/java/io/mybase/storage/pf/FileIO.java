@@ -128,6 +128,17 @@ public class FileIO implements Closeable {
         }
     }
 
+    public long length() {
+        if (!opened.get()) {
+            throw new StorageException("not opened");
+        }
+        try {
+            return raf.length();
+        } catch (IOException e) {
+            throw new StorageException("cannot get length");
+        }
+    }
+
     File getFile() {
         return file;
     }

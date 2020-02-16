@@ -7,6 +7,7 @@ import static org.junit.Assert.assertThat;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -90,6 +91,37 @@ public class PagedFileTest {
         file.close();
         file.open();
         file.readPage(0);
+    }
+
+    @Test
+    public void getLength() {
+        file.open();
+        assertThat(file.getFileLength(), is((long) 3 * PAGE_SIZE));
+    }
+
+    @Test
+    public void getPages() {
+        file.open();
+        assertThat(file.getPageCount(), is(3));
+    }
+
+    @Test
+    public void readNonExistent() {
+        file.open();
+        file.readPage(10000);
+    }
+
+    @Test
+    public void writeWithHole() {
+        file.open();
+        byte[] bytes = new byte[PAGE_SIZE];
+        bytes[0] = 1;
+        bytes[1] = 2;
+        file.writePage(100, new Page(PAGE_SIZE, bytes));
+        assertThat(file.getFileLength(), is(PAGE_SIZE * 101L));
+        assertThat(file.getPageCount(), is(101));
+        byte[] bytesRead = file.readPage(100).getData();
+        assertThat(Arrays.equals(bytes, bytesRead), is(true));
     }
 
     private void checkPageContent(byte[] bytes, byte firstByte) {

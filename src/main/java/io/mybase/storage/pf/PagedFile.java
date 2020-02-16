@@ -14,8 +14,8 @@ public class PagedFile implements Closeable {
     }
 
     public Page readPage(int pageNum) {
-        byte[] bytes = new byte[pageSize];
         file.seek(pageNum * pageSize);
+        byte[] bytes = new byte[pageSize];
         file.read(bytes);
         return new Page(pageSize, bytes);
     }
@@ -36,5 +36,13 @@ public class PagedFile implements Closeable {
 
     public int getPageSize() {
         return pageSize;
+    }
+
+    public long getFileLength() {
+        return file.length();
+    }
+
+    public int getPageCount() {
+        return (int) file.length() / pageSize;
     }
 }
