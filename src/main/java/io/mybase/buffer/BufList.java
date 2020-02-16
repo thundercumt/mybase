@@ -1,10 +1,10 @@
 package io.mybase.buffer;
 
+import static io.mybase.buffer.BufferConstants.NA;
 import io.mybase.CapacityException;
 
 @SuppressWarnings("unchecked")
 public class BufList<T> {
-    private static final int NA = -1;
     private int capacity;
     private Object[] bufTable;
     private int free;

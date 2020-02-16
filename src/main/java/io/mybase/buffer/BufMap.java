@@ -1,5 +1,7 @@
 package io.mybase.buffer;
 
+import static io.mybase.buffer.BufferConstants.NA;
+
 import io.mybase.StorageException;
 import io.mybase.storage.pf.PagedFile;
 
@@ -24,6 +26,13 @@ public class BufMap {
         buckets = new MapEntry[bucketNum];
     }
 
+    /**
+     * find page slot
+     * 
+     * @param file
+     * @param pageNum
+     * @return the page slot or -1 when the page is not found
+     */
     public int find(PagedFile file, int pageNum) {
         int bucket = bucket(file, pageNum);
         for (MapEntry p = buckets[bucket]; p != null; p = p.next) {
@@ -31,9 +40,17 @@ public class BufMap {
                 return p.slot;
             }
         }
-        return -1;
+        return NA;
     }
 
+    /**
+     * insert page slot
+     * 
+     * @param file
+     * @param pageNum
+     * @param slot
+     * @throws StorageException if duplicate is found.
+     */
     public void insert(PagedFile file, int pageNum, int slot) {
         if (find(file, pageNum) != -1) {
             throw new StorageException("duplicate page exists.");
@@ -49,6 +66,13 @@ public class BufMap {
         }
     }
 
+    /**
+     * delete page slot from map
+     * 
+     * @param file
+     * @param pageNum
+     * @return the page slot or -1 when the page is not found
+     */
     public int delete(PagedFile file, int pageNum) {
         int bucket = bucket(file, pageNum);
         MapEntry p = null;
@@ -66,7 +90,7 @@ public class BufMap {
                 buckets[bucket] = p.next;
             return p.slot;
         }
-        return -1;
+        return NA;
     }
 
     private int bucket(PagedFile file, int pageNum) {
