@@ -8,7 +8,7 @@ public class PagedFile implements Closeable {
     private FileIO file;
     private int pageSize;
 
-    PagedFile(File file, int pageSize) {
+    public PagedFile(File file, int pageSize) {
         this.file = new FileIO(file);
         this.pageSize = pageSize;
     }
