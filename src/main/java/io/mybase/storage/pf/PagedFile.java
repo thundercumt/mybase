@@ -20,7 +20,7 @@ public class PagedFile implements Closeable {
         return new Page(pageSize, bytes);
     }
 
-    void open() {
+    public void open() {
         file.open();
     }
 

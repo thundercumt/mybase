@@ -19,6 +19,7 @@ public class BufferMgr {
         int slot = bufMap.find(file, pageNum);
         Page page;
         if (slot == NA) {
+            file.open();
             page = file.readPage(pageNum);
             slot = bufTable.add(page);
             bufMap.insert(file, pageNum, slot);
@@ -31,7 +32,12 @@ public class BufferMgr {
     public void flush(PagedFile file, int pageNum) {
         Page page = getPage(file, pageNum);
         if (page.isDirty()) {
+            file.open();
             file.writePage(pageNum, page);
         }
+    }
+
+    public int available() {
+        return bufTable.getAvailable();
     }
 }
